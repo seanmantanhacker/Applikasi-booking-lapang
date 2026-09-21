@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { User, Phone, Calendar, Clock, Users, FileText, ArrowRight, CheckCircle } from 'lucide-react';
-import { COURTS, BOOKING_DURATIONS, PLAYER_COUNTS } from '../config/site';
+import { COURTS, BOOKING_DURATIONS } from '../config/site';
 import type { BookingFormData, Booking } from '../types';
 import {
   validateName,
