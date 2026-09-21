@@ -5,9 +5,9 @@
 // ============================================================
 
 import { Clock } from 'lucide-react';
-import { TIME_SLOTS, BOOKING_DURATIONS } from '../config/site';
+import { TIME_SLOTS, BOOKING_DURATIONS, getVenueCloseTime } from '../config/site';
 import type { AvailabilitySlot } from '../types';
-import { timesOverlap, calculateEndTime, isSlotInPast } from '../utils';
+import { timesOverlap, calculateEndTime, isSlotInPast, timeToMinutes } from '../utils';
 import { LoadingState } from './States';
 
 interface AvailabilityGridProps {
@@ -21,7 +21,7 @@ interface AvailabilityGridProps {
   loading?: boolean;
 }
 
-type SlotStatus = 'available' | 'booked' | 'selected' | 'past' | 'partial-conflict';
+type SlotStatus = 'available' | 'booked' | 'selected' | 'past' | 'closed';
 
 function getSlotStatus(
   time: string,
@@ -33,11 +33,17 @@ function getSlotStatus(
   if (isSlotInPast(date, time)) return 'past';
 
   const endTime = calculateEndTime(time, duration);
+  const closingTime = getVenueCloseTime(date);
+
+  // Check if session ends after venue closing time
+  if (timeToMinutes(endTime) > timeToMinutes(closingTime)) {
+    return 'closed';
+  }
 
   // Check if this slot is the selected one
   if (selectedTime === time) return 'selected';
 
-  // Check if this slot would overlap with any booking
+  // Check if this slot would overlap with ANY existing booking
   for (const slot of bookedSlots) {
     if (timesOverlap(time, endTime, slot.startTime, slot.endTime)) {
       return 'booked';
@@ -87,6 +93,10 @@ export default function AvailabilityGrid({
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded bg-red-100 border border-red-200 inline-block" />
             Booked
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded bg-cream-300/60 border border-cream-400 inline-block" />
+            Closed
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded bg-navy inline-block" />
@@ -162,7 +172,22 @@ export default function AvailabilityGrid({
                 title="Fully Booked"
               >
                 <div className="font-semibold">{slot.label}</div>
-                <div className="text-[10px] opacity-60 mt-0.5">Full</div>
+                <div className="text-[10px] opacity-60 mt-0.5">Booked</div>
+              </div>
+            );
+          }
+
+          if (status === 'closed') {
+            return (
+              <div
+                key={slot.time}
+                className="slot-past text-center opacity-60 bg-cream-300/40 text-navy-400 cursor-not-allowed"
+                aria-label={`${slot.time} ends after venue closing time`}
+                role="img"
+                title={`Venue closes at ${getVenueCloseTime(date)}. Session would end at ${endTime}.`}
+              >
+                <div className="font-semibold">{slot.label}</div>
+                <div className="text-[10px] opacity-60 mt-0.5">Closed</div>
               </div>
             );
           }

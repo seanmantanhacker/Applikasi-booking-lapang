@@ -13,7 +13,7 @@ export const SITE_CONFIG = {
     'A premium padel venue combined with a cozy coffee shop. Come for the game, stay for the coffee.',
 
   // ── Location ─────────────────────────────────────────────
-  ADDRESS: 'Jl. BKR no. 182-184 Bandung',
+  ADDRESS: 'Jl. BKR no. 180 Bandung',
   PHONE: '+62 8777 105 1800',
   EMAIL: 'jiosofficial10@gmail.com',
   GOOGLE_MAPS_URL: 'https://maps.google.com/?q=JIOS+Padel+Coffee',
@@ -94,6 +94,21 @@ export const TIME_SLOTS: TimeSlot[] = [
 // ── Venue Open / Close ────────────────────────────────────────
 export const VENUE_OPEN_TIME = '08:00';
 export const VENUE_CLOSE_TIME = '22:00';
+
+/** Get venue closing time for a specific date YYYY-MM-DD */
+export function getVenueCloseTime(dateStr?: string): string {
+  if (!dateStr) return VENUE_CLOSE_TIME;
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    // Saturday is day 6
+    if (d.getDay() === 6) {
+      return '23:00';
+    }
+  } catch {
+    // fallback
+  }
+  return '22:00';
+}
 
 // ── Minimum advance booking time (minutes) ──────────────────
 export const MIN_ADVANCE_BOOKING_MINUTES = 30;

@@ -25,7 +25,9 @@ import {
   timesOverlap,
   generateReferenceId,
   isSlotInPast,
+  timeToMinutes,
 } from '../utils';
+import { getVenueCloseTime } from '../config/site';
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
@@ -92,6 +94,15 @@ export async function checkSlotAvailability(
   durationHours: number
 ): Promise<{ available: boolean; reason?: string }> {
   const endTime = calculateEndTime(startTime, durationHours);
+  const closingTime = getVenueCloseTime(date);
+
+  // Don't allow bookings ending after venue closing time
+  if (timeToMinutes(endTime) > timeToMinutes(closingTime)) {
+    return {
+      available: false,
+      reason: `Venue closes at ${closingTime}. A ${durationHours}-hour session starting at ${startTime} would end at ${endTime}.`,
+    };
+  }
 
   // Don't allow past bookings
   if (isSlotInPast(date, startTime)) {
@@ -102,7 +113,7 @@ export async function checkSlotAvailability(
 
   for (const slot of existingSlots) {
     if (timesOverlap(startTime, endTime, slot.startTime, slot.endTime)) {
-      return { available: false, reason: 'This time slot is already booked.' };
+      return { available: false, reason: 'This time slot conflicts with an existing booking.' };
     }
   }
 
@@ -137,6 +148,12 @@ export async function createBooking(formData: BookingFormData): Promise<Booking>
       playerCount: formData.playerCount,
       notes: formData.notes,
     });
+  }
+
+  // Validate closing time
+  const closingTime = getVenueCloseTime(formData.date);
+  if (timeToMinutes(endTime) > timeToMinutes(closingTime)) {
+    throw new Error(`Venue closes at ${closingTime}. Session cannot end at ${endTime}.`);
   }
 
   // Firebase: use a transaction to prevent double booking
