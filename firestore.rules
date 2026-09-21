@@ -12,9 +12,8 @@ service cloud.firestore {
     // ── bookings collection ──────────────────────────────────
     match /bookings/{bookingId} {
 
-      // PUBLIC: Cannot read individual booking documents (protects PII)
-      // Admins can read all bookings
-      allow read: if isAdmin();
+      // Allow read so public booking flow can query existing bookings to detect slot conflicts
+      allow read: if true;
 
       // PUBLIC: Can create a new booking (no auth required)
       // Validates required fields are present and well-formed
