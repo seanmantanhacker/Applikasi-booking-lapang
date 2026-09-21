@@ -3,7 +3,7 @@
 // Multi-step: form → summary → confirmation
 // ============================================================
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { User, Phone, Calendar, Clock, Users, FileText, ArrowRight, CheckCircle } from 'lucide-react';
 import { COURTS, BOOKING_DURATIONS } from '../config/site';
 import type { BookingFormData, Booking } from '../types';
@@ -50,9 +50,17 @@ export default function BookingForm() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
   const [slotError, setSlotError] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const court = COURTS[0];
   const { slots, loading: availLoading, error: availError, refetch } = useAvailability(form.date, form.courtId);
+
+  // Scroll into view whenever step changes (form -> summary -> confirmation)
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [step]);
 
   // Reset selected time when date or duration changes
   useEffect(() => {
@@ -146,25 +154,31 @@ export default function BookingForm() {
   };
 
   if (step === 'confirmation' && confirmedBooking) {
-    return <BookingConfirmation booking={confirmedBooking} onReset={handleReset} />;
+    return (
+      <div ref={containerRef} id="booking-confirmation-container" className="scroll-mt-28">
+        <BookingConfirmation booking={confirmedBooking} onReset={handleReset} />
+      </div>
+    );
   }
 
   if (step === 'summary') {
     return (
-      <BookingSummary
-        form={form}
-        courtName={court.name}
-        onBack={() => setStep('form')}
-        onConfirm={handleConfirm}
-        submitting={submitting}
-      />
+      <div ref={containerRef} id="booking-summary-container" className="scroll-mt-28">
+        <BookingSummary
+          form={form}
+          courtName={court.name}
+          onBack={() => setStep('form')}
+          onConfirm={handleConfirm}
+          submitting={submitting}
+        />
+      </div>
     );
   }
 
   const endTime = form.startTime ? calculateEndTime(form.startTime, form.duration) : null;
 
   return (
-    <div id="booking" className="scroll-mt-20">
+    <div ref={containerRef} id="booking" className="scroll-mt-28">
       <div className="card max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">

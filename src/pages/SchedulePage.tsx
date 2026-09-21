@@ -4,6 +4,7 @@
 // ============================================================
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { addDays, format, subDays } from 'date-fns';
 import { COURTS } from '../config/site';
@@ -167,9 +168,9 @@ export default function SchedulePage() {
         <div className="mt-10 text-center p-8 bg-navy rounded-3xl">
           <h3 className="font-serif text-2xl text-cream-200 mb-2">Ready to play?</h3>
           <p className="text-cream-400 text-sm mb-6">Select an available slot and book your court in minutes.</p>
-          <a href="/booking" className="btn-caramel">
+          <Link to="/booking" className="btn-caramel inline-flex">
             Book a Court
-          </a>
+          </Link>
         </div>
       </div>
     </main>
