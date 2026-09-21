@@ -40,15 +40,15 @@ function getSlotStatus(
     return 'closed';
   }
 
-  // Check if this slot is the selected one
-  if (selectedTime === time) return 'selected';
-
   // Check if this slot would overlap with ANY existing booking
   for (const slot of bookedSlots) {
     if (timesOverlap(time, endTime, slot.startTime, slot.endTime)) {
       return 'booked';
     }
   }
+
+  // Check if this slot is the selected one (only if it doesn't conflict)
+  if (selectedTime === time) return 'selected';
 
   return 'available';
 }
