@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
+import JiosLogo from '../components/JiosLogo';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -37,17 +38,20 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar (mobile) */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-cream-300">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-xl text-navy hover:bg-cream-200 transition-colors"
-            aria-label="Open menu"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          {title && (
-            <h1 className="font-serif text-navy text-lg">{title}</h1>
-          )}
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-cream-300">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-xl text-navy hover:bg-cream-200 transition-colors"
+              aria-label="Open menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            {title && (
+              <h1 className="font-serif text-navy text-lg">{title}</h1>
+            )}
+          </div>
+          <JiosLogo variant="dark" size="sm" />
         </div>
 
         {/* Content */}

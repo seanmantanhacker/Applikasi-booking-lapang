@@ -10,9 +10,9 @@ interface JiosLogoProps {
 }
 
 const sizes = {
-  sm: { mark: 28, text: 16 },
-  md: { mark: 38, text: 22 },
-  lg: { mark: 52, text: 30 },
+  sm: { imgHeight: 28, text: 16 },
+  md: { imgHeight: 38, text: 22 },
+  lg: { imgHeight: 56, text: 30 },
 };
 
 export default function JiosLogo({
@@ -21,38 +21,22 @@ export default function JiosLogo({
   className = '',
 }: JiosLogoProps) {
   const s = sizes[size];
-  const markColor = variant === 'light' ? '#F5F0E7' : '#10203A';
-  const textColor = variant === 'light' ? '#F5F0E7' : '#10203A';
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const logoSrc = `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}logo.png`;
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      {/* Padel ball mark */}
-      <svg
-        width={s.mark}
-        height={s.mark}
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        {/* Outer oval (padel ball shape) */}
-        <ellipse cx="50" cy="42" rx="38" ry="34" fill={markColor} />
-        {/* Inner swoosh — the string/seam of a padel ball */}
-        <path
-          d="M20 60 Q50 20 80 60"
-          stroke={variant === 'light' ? '#10203A' : '#F5F0E7'}
-          strokeWidth="7"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.35"
-        />
-        {/* Bottom crescent (coffee cup bottom silhouette) */}
-        <path
-          d="M18 68 Q50 95 82 68"
-          fill={markColor}
-        />
-      </svg>
-
+    <div className={`flex items-center gap-2.5 ${className}`}>
+      <img
+        src={logoSrc}
+        alt="JIOS Padel & Coffee"
+        style={{ height: `${s.imgHeight}px`, width: 'auto' }}
+        className="object-contain"
+        onError={(e) => {
+          // Fallback if image fails to load
+          const target = e.currentTarget;
+          target.style.display = 'none';
+        }}
+      />
       {variant !== 'mark-only' && (
         <span
           style={{
@@ -60,7 +44,7 @@ export default function JiosLogo({
             fontSize: s.text,
             fontWeight: 700,
             letterSpacing: '0.12em',
-            color: textColor,
+            color: variant === 'light' ? '#F5F0E7' : '#10203A',
             lineHeight: 1,
           }}
         >
