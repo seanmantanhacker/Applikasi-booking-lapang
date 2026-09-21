@@ -3,7 +3,7 @@
 // ============================================================
 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, List, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, List, LogOut, X } from 'lucide-react';
 import JiosLogo from '../JiosLogo';
 import { signOut } from '../../services/authService';
 
@@ -12,8 +12,7 @@ interface AdminSidebarProps {
 }
 
 const NAV_ITEMS = [
-  { to: '/admin', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, end: true },
-  { to: '/admin/schedule', label: 'Schedule', icon: <CalendarDays className="w-5 h-5" />, end: false },
+  { to: '/admin', label: 'Dashboard & Schedule', icon: <LayoutDashboard className="w-5 h-5" />, end: true },
   { to: '/admin/bookings', label: 'All Bookings', icon: <List className="w-5 h-5" />, end: false },
 ];
 

@@ -31,7 +31,8 @@ service cloud.firestore {
         request.resource.data.status == 'confirmed' &&
         request.resource.data.playerCount >= 1 &&
         request.resource.data.playerCount <= 50 &&
-        request.resource.data.duration in [1, 1.5, 2];
+        request.resource.data.duration >= 1 &&
+        request.resource.data.duration <= 6;
 
       // PUBLIC: Cannot update bookings
       // ADMIN: Can update any booking

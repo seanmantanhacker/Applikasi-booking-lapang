@@ -45,6 +45,12 @@ export const BOOKING_DURATIONS: { value: number; label: string }[] = [
   { value: 1, label: '1 Hour' },
   { value: 1.5, label: '1.5 Hours' },
   { value: 2, label: '2 Hours' },
+  { value: 2.5, label: '2.5 Hours' },
+  { value: 3, label: '3 Hours' },
+  { value: 3.5, label: '3.5 Hours' },
+  { value: 4, label: '4 Hours' },
+  { value: 5, label: '5 Hours' },
+  { value: 6, label: '6 Hours' },
 ];
 
 // ── Player Count Options ─────────────────────────────────────

@@ -65,14 +65,6 @@ export default function App() {
           }
         />
         <Route
-          path="/admin/schedule"
-          element={
-            <ProtectedRoute>
-              <AdminDashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/admin/bookings"
           element={
             <ProtectedRoute>

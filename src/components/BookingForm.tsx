@@ -211,27 +211,52 @@ export default function BookingForm() {
 
           {/* Duration */}
           <div>
-            <label className="form-label flex items-center gap-2">
-              <Clock className="w-4 h-4 text-caramel" />
-              Duration
-            </label>
-            <div className="flex gap-3 flex-wrap">
-              {BOOKING_DURATIONS.map((d) => (
+            <div className="flex items-center justify-between mb-2">
+              <label className="form-label flex items-center gap-2 mb-0">
+                <Clock className="w-4 h-4 text-caramel" />
+                Duration
+              </label>
+              <span className="text-xs text-navy-400 font-medium">
+                Selected: <strong className="text-navy font-semibold">{form.duration} {form.duration === 1 ? 'Hour' : 'Hours'}</strong>
+              </span>
+            </div>
+
+            {/* Quick Chips for Most Common Durations */}
+            <div className="grid grid-cols-3 gap-2.5 mb-2.5">
+              {[1, 2, 3].map((val) => (
                 <button
-                  key={d.value}
+                  key={val}
                   type="button"
-                  onClick={() => set('duration', d.value)}
-                  className={`flex-1 min-w-[90px] py-2.5 px-4 rounded-xl border-2 text-sm font-medium transition-all duration-150
-                    ${form.duration === d.value
+                  onClick={() => set('duration', val)}
+                  className={`py-2 px-3 rounded-xl border-2 text-sm font-medium transition-all duration-150
+                    ${form.duration === val
                       ? 'bg-navy text-cream-200 border-navy shadow-soft'
                       : 'bg-white text-navy border-cream-400 hover:border-navy'
                     }`}
-                  id={`duration-${d.value}`}
                 >
-                  {d.label}
+                  {val} {val === 1 ? 'Hour' : 'Hours'}
                 </button>
               ))}
             </div>
+
+            {/* Dropdown for custom durations up to 6 hours */}
+            <div className="relative">
+              <select
+                id="booking-duration-select"
+                value={form.duration}
+                onChange={(e) => set('duration', parseFloat(e.target.value))}
+                aria-label="Select custom booking duration"
+                className="form-input text-sm font-medium py-2.5 bg-white text-navy border-cream-400 focus:border-navy cursor-pointer"
+              >
+                <option value="" disabled>Or choose extended duration (up to 6 hours)...</option>
+                {BOOKING_DURATIONS.map((d) => (
+                  <option key={d.value} value={d.value}>
+                    {d.label} {d.value >= 4 ? '🔥 Long Session' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <p className="text-xs text-navy-300 mt-1.5">Extended sessions up to 6 hours are supported for tournaments or private group play.</p>
           </div>
 
           {/* Availability Grid */}

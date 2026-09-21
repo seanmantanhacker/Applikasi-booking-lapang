@@ -24,19 +24,23 @@ export default function JiosLogo({
   const baseUrl = import.meta.env.BASE_URL || '/';
   const logoSrc = `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}logo.png`;
 
+  const isLight = variant === 'light';
+
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      <img
-        src={logoSrc}
-        alt="JIOS Padel & Coffee"
-        style={{ height: `${s.imgHeight}px`, width: 'auto' }}
-        className="object-contain"
-        onError={(e) => {
-          // Fallback if image fails to load
-          const target = e.currentTarget;
-          target.style.display = 'none';
-        }}
-      />
+      <div className={isLight ? 'p-1 rounded-xl bg-cream-100/90 shadow-sm inline-flex items-center justify-center' : 'inline-flex items-center justify-center'}>
+        <img
+          src={logoSrc}
+          alt="JIOS Padel & Coffee"
+          style={{ height: `${s.imgHeight}px`, width: 'auto' }}
+          className="object-contain"
+          onError={(e) => {
+            // Fallback if image fails to load
+            const target = e.currentTarget;
+            target.style.display = 'none';
+          }}
+        />
+      </div>
       {variant !== 'mark-only' && (
         <span
           style={{
