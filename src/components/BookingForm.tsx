@@ -55,8 +55,14 @@ export default function BookingForm() {
   const court = COURTS[0];
   const { slots, loading: availLoading, error: availError, refetch } = useAvailability(form.date, form.courtId);
 
-  // Scroll into view whenever step changes (form -> summary -> confirmation)
+  const isFirstMount = useRef(true);
+
+  // Scroll into view only when user advances step (not on first page load)
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     if (containerRef.current) {
       containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
