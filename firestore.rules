@@ -30,7 +30,7 @@ service cloud.firestore {
         request.resource.data.phone.size() >= 8 &&
         request.resource.data.status == 'confirmed' &&
         request.resource.data.playerCount >= 1 &&
-        request.resource.data.playerCount <= 4 &&
+        request.resource.data.playerCount <= 50 &&
         request.resource.data.duration in [1, 1.5, 2];
 
       // PUBLIC: Cannot update bookings

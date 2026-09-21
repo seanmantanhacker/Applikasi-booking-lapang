@@ -308,27 +308,42 @@ export default function BookingForm() {
 
           {/* Players */}
           <div>
-            <label className="form-label flex items-center gap-2">
+            <label htmlFor="booking-players" className="form-label flex items-center gap-2">
               <Users className="w-4 h-4 text-caramel" />
               Number of Players
             </label>
-            <div className="flex gap-3">
-              {PLAYER_COUNTS.map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => set('playerCount', n)}
-                  className={`flex-1 py-2.5 rounded-xl border-2 text-sm font-medium transition-all duration-150
-                    ${form.playerCount === n
-                      ? 'bg-navy text-cream-200 border-navy shadow-soft'
-                      : 'bg-white text-navy border-cream-400 hover:border-navy'
-                    }`}
-                  id={`players-${n}`}
-                >
-                  {n}
-                </button>
-              ))}
+            <div className="flex items-center gap-3 max-w-[220px]">
+              <button
+                type="button"
+                onClick={() => set('playerCount', Math.max(1, form.playerCount - 1))}
+                className="w-11 h-11 rounded-xl border-2 border-cream-400 bg-white hover:border-navy text-navy font-bold text-lg flex items-center justify-center transition-colors"
+                aria-label="Decrease players"
+              >
+                −
+              </button>
+              <input
+                id="booking-players"
+                type="number"
+                min="1"
+                max="50"
+                value={form.playerCount || ''}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10);
+                  set('playerCount', isNaN(val) ? 1 : Math.max(1, val));
+                }}
+                className={`form-input text-center font-semibold text-lg py-2.5 ${errors.playerCount ? 'form-input-error' : ''}`}
+              />
+              <button
+                type="button"
+                onClick={() => set('playerCount', (form.playerCount || 0) + 1)}
+                className="w-11 h-11 rounded-xl border-2 border-cream-400 bg-white hover:border-navy text-navy font-bold text-lg flex items-center justify-center transition-colors"
+                aria-label="Increase players"
+              >
+                +
+              </button>
             </div>
+            <p className="text-xs text-navy-300 mt-1.5">Standard court plays 4, but larger groups and friends are welcome.</p>
+            {errors.playerCount && <p className="form-error">{errors.playerCount}</p>}
           </div>
 
           {/* Notes */}

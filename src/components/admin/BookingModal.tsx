@@ -206,21 +206,32 @@ export default function BookingModal({ booking, onClose, onUpdated }: BookingMod
               </div>
               <div>
                 <label className="form-label">Number of Players</label>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4].map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => setEditPlayerCount(n)}
-                      className={`flex-1 py-2 rounded-xl border-2 text-sm font-medium transition-all
-                        ${editPlayerCount === n
-                          ? 'bg-navy text-cream-200 border-navy'
-                          : 'border-cream-400 text-navy hover:border-navy'
-                        }`}
-                    >
-                      {n}
-                    </button>
-                  ))}
+                <div className="flex items-center gap-3 max-w-[200px]">
+                  <button
+                    type="button"
+                    onClick={() => setEditPlayerCount(Math.max(1, editPlayerCount - 1))}
+                    className="w-10 h-10 rounded-xl border-2 border-cream-400 bg-white hover:border-navy text-navy font-bold text-lg flex items-center justify-center transition-colors"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    value={editPlayerCount}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      setEditPlayerCount(isNaN(val) ? 1 : Math.max(1, val));
+                    }}
+                    className="form-input text-center font-semibold text-base py-2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setEditPlayerCount(editPlayerCount + 1)}
+                    className="w-10 h-10 rounded-xl border-2 border-cream-400 bg-white hover:border-navy text-navy font-bold text-lg flex items-center justify-center transition-colors"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
               <div>

@@ -31,22 +31,34 @@ export default function Header() {
     setMenuOpen(false);
   }, [location]);
 
-  const handleNavClick = (href: string, hash: string) => {
-    if (hash && location.pathname === '/') {
-      const el = document.getElementById(hash);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-    }
-    if (href.startsWith('/#')) {
-      navigate('/');
-      setTimeout(() => {
-        const el = document.getElementById(hash);
+  const isHomePage = location.pathname === '/' || location.pathname === '';
+  const isHeaderSolid = scrolled || !isHomePage;
+
+  useEffect(() => {
+    // If arriving at home page with a hash in URL (or location state), scroll to it
+    if (isHomePage && location.hash) {
+      const id = location.hash.replace('#', '');
+      const timer = setTimeout(() => {
+        const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [location, isHomePage]);
+
+  const handleNavClick = (href: string, hash: string) => {
+    if (hash) {
+      if (isHomePage) {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        navigate({ pathname: '/', hash: `#${hash}` });
+      }
     } else {
       navigate(href);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     setMenuOpen(false);
   };
@@ -54,8 +66,8 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-soft shadow-soft'
+        isHeaderSolid
+          ? 'bg-white/95 backdrop-blur-soft shadow-soft border-b border-cream-300/40'
           : 'bg-transparent'
       }`}
     >
@@ -64,7 +76,7 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" aria-label="JIOS Padel & Coffee Home">
             <JiosLogo
-              variant={scrolled ? 'dark' : 'light'}
+              variant={isHeaderSolid ? 'dark' : 'light'}
               size="md"
               className="transition-all duration-300"
             />
@@ -72,16 +84,25 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-            {NAV_LINKS.map((link) => (
-              <button
-                key={link.label}
-                onClick={() => handleNavClick(link.href, link.hash)}
-                className={`nav-link ${scrolled ? 'text-navy-400' : 'text-cream-300'} hover:text-cream-100`}
-                style={{ color: scrolled ? undefined : '#D0BF9D' }}
-              >
-                {link.label}
-              </button>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive = link.href === location.pathname;
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => handleNavClick(link.href, link.hash)}
+                  className={`nav-link text-sm font-medium transition-colors ${
+                    isHeaderSolid
+                      ? isActive
+                        ? 'text-caramel font-semibold'
+                        : 'text-navy-400 hover:text-navy'
+                      : 'text-cream-300 hover:text-cream-100'
+                  }`}
+                  style={{ color: isHeaderSolid ? undefined : '#D0BF9D' }}
+                >
+                  {link.label}
+                </button>
+              );
+            })}
           </nav>
 
           {/* CTA */}
@@ -94,7 +115,7 @@ export default function Header() {
           {/* Mobile Hamburger */}
           <button
             className={`md:hidden p-2 rounded-xl transition-colors ${
-              scrolled ? 'text-navy hover:bg-cream-300' : 'text-cream-200 hover:bg-white/10'
+              isHeaderSolid ? 'text-navy hover:bg-cream-300' : 'text-cream-200 hover:bg-white/10'
             }`}
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
