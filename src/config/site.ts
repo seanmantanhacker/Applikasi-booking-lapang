@@ -13,8 +13,8 @@ export const SITE_CONFIG = {
     'A premium padel venue combined with a cozy coffee shop. Come for the game, stay for the coffee.',
 
   // ── Location ─────────────────────────────────────────────
-  ADDRESS: 'Jl. Contoh No. 123, Jakarta Selatan, DKI Jakarta 12345',
-  PHONE: '+62 812-3456-7890',
+  ADDRESS: 'Jl. BKR no. 182-184 Bandung',
+  PHONE: '+62 8777 105 1800',
   EMAIL: 'jiosofficial10@gmail.com',
   GOOGLE_MAPS_URL: 'https://maps.google.com/?q=JIOS+Padel+Coffee',
 
@@ -26,8 +26,8 @@ export const SITE_CONFIG = {
   ],
 
   // ── Social ───────────────────────────────────────────────
-  INSTAGRAM: 'https://instagram.com/jiosofficial',
-  WHATSAPP: 'https://wa.me/628123456789',
+  INSTAGRAM: 'https://instagram.com/jios.cafe',
+  WHATSAPP: 'https://wa.me/6287771051800',
 } as const;
 
 // ── Single Court (fixed — only 1 court) ──────────────────────
