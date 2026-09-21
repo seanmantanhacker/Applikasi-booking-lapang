@@ -34,15 +34,20 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 // ── Firestore helpers ────────────────────────────────────────
 
 function convertFirestoreBooking(docData: Record<string, unknown>, id: string): Booking {
+  const startTime = docData.startTime as string;
+  const duration = (docData.duration as number) || 1;
+  // Always recalculate endTime from startTime + duration for consistency
+  const endTime = (docData.endTime as string) || calculateEndTime(startTime, duration);
+
   return {
     id,
     referenceId: docData.referenceId as string,
     customerName: docData.customerName as string,
     phone: docData.phone as string,
     date: docData.date as string,
-    startTime: docData.startTime as string,
-    endTime: docData.endTime as string,
-    duration: docData.duration as number,
+    startTime,
+    endTime,
+    duration,
     courtId: docData.courtId as string,
     playerCount: docData.playerCount as number,
     notes: (docData.notes as string) || '',
@@ -76,11 +81,12 @@ export async function getAvailabilityByDate(
   }
 
   // Return anonymized availability — NO PII
+  // Always recalculate endTime from startTime + duration to guarantee correctness
   return bookings.map((b) => ({
     date: b.date,
     courtId: b.courtId,
     startTime: b.startTime,
-    endTime: b.endTime,
+    endTime: b.endTime || calculateEndTime(b.startTime, b.duration || 1),
     status: 'booked' as const,
   }));
 }
