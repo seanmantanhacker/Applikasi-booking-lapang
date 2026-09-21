@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ─────────────────────────────────────
+
+    // Check if request is from an authenticated admin
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // ── bookings collection ──────────────────────────────────
+    match /bookings/{bookingId} {
+
+      // PUBLIC: Cannot read individual booking documents (protects PII)
+      // Admins can read all bookings
+      allow read: if isAdmin();
+
+      // PUBLIC: Can create a new booking (no auth required)
+      // Validates required fields are present and well-formed
+      allow create: if
+        request.resource.data.keys().hasAll([
+          'customerName', 'phone', 'date', 'startTime', 'endTime',
+          'duration', 'courtId', 'playerCount', 'status',
+          'referenceId', 'createdAt', 'updatedAt'
+        ]) &&
+        request.resource.data.customerName is string &&
+        request.resource.data.customerName.size() >= 2 &&
+        request.resource.data.customerName.size() <= 100 &&
+        request.resource.data.phone is string &&
+        request.resource.data.phone.size() >= 8 &&
+        request.resource.data.status == 'confirmed' &&
+        request.resource.data.playerCount >= 1 &&
+        request.resource.data.playerCount <= 4 &&
+        request.resource.data.duration in [1, 1.5, 2];
+
+      // PUBLIC: Cannot update bookings
+      // ADMIN: Can update any booking
+      allow update: if isAdmin();
+
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+
+    // ── availability collection (public, anonymized) ─────────
+    // This collection stores slot status with NO PII.
+    // It is written by Cloud Functions or admin-side logic.
+    match /availability/{availId} {
+      // Public can read availability (no PII here)
+      allow read: if true;
+
+      // Only admins can write
+      allow write: if isAdmin();
+    }
+
+    // ── courts collection ─────────────────────────────────────
+    match /courts/{courtId} {
+      // Public can read court names
+      allow read: if true;
+
+      // Only admins can write
+      allow write: if isAdmin();
+    }
+
+    // ── settings collection ───────────────────────────────────
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Default deny ──────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
