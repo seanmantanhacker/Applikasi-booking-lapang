@@ -8,43 +8,133 @@ import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO } from 'da
 import AdminLayout from '../../layouts/AdminLayout';
 import BookingModal from '../../components/admin/BookingModal';
 import { useBookings } from '../../hooks/useBookings';
+import { getInitiatedBookingsFromDate, getBookingByReference } from '../../services/bookingService';
 import { LoadingState, EmptyState, ErrorState } from '../../components/States';
 import type { Booking } from '../../types';
 import { formatDateDisplay, formatDuration, getTodayString } from '../../utils';
 
-type FilterPreset = 'today' | 'month' | 'custom' | 'all';
+type FilterPreset = 'month' | 'custom' | 'all';
 
 const ITEMS_PER_PAGE = 10;
 
 export default function AdminBookingsPage() {
   const today = getTodayString();
-  const [filterPreset, setFilterPreset] = useState<FilterPreset>('today');
+  const [filterPreset, setFilterPreset] = useState<FilterPreset>('month');
   const [customDate, setCustomDate] = useState('');
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
-  // If filter is specific to single date (today or custom), pass to backend query to optimize network payload
+  // Direct reference search results from database
+  const [dbSearchResults, setDbSearchResults] = useState<Booking[] | null>(null);
+  const [searchingDb, setSearchingDb] = useState(false);
+
+  // Additional initiated bookings (today onwards) so they always show regardless of active tab
+  const [initiatedBookings, setInitiatedBookings] = useState<Booking[]>([]);
+
+  // If filter is specific to single custom date, pass to backend query to optimize network payload
   const backendDateFilter = 
-    filterPreset === 'today' 
-      ? today 
-      : filterPreset === 'custom' && customDate 
-        ? customDate 
-        : undefined;
+    filterPreset === 'custom' && customDate 
+      ? customDate 
+      : undefined;
 
   const { bookings, loading, error, refetch } = useBookings(backendDateFilter);
 
+  // Fetch upcoming initiated bookings (from today onwards)
+  const fetchInitiated = async () => {
+    try {
+      const data = await getInitiatedBookingsFromDate(today);
+      setInitiatedBookings(data);
+    } catch (e) {
+      console.error('Failed to fetch initiated bookings:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchInitiated();
+  }, [today]);
+
+  // Effect: When search looks like a booking reference (e.g. JIOS- or 6-char code) or admin types query,
+  // query database directly if search has content
+  useEffect(() => {
+    const trimmed = search.trim();
+    if (!trimmed) {
+      setDbSearchResults(null);
+      setSearchingDb(false);
+      return;
+    }
+
+    // If query could be a reference ID (starts with JIOS or contains code)
+    const timer = setTimeout(async () => {
+      // Check if query could be reference code
+      const isRefCode = trimmed.toUpperCase().startsWith('JIOS') || trimmed.length >= 4;
+      if (isRefCode) {
+        setSearchingDb(true);
+        try {
+          // Normalize reference format (e.g. user typed "7K2M9X" or "JIOS-7K2M9X")
+          const formattedCode = trimmed.toUpperCase().startsWith('JIOS-') 
+            ? trimmed.toUpperCase() 
+            : `JIOS-${trimmed.toUpperCase()}`;
+          
+          const results = await getBookingByReference(formattedCode);
+          if (results.length > 0) {
+            setDbSearchResults(results);
+          } else {
+            // Also try exact string as typed
+            const altResults = await getBookingByReference(trimmed.toUpperCase());
+            setDbSearchResults(altResults.length > 0 ? altResults : []);
+          }
+        } catch (err) {
+          console.error('Database search error:', err);
+          setDbSearchResults([]);
+        } finally {
+          setSearchingDb(false);
+        }
+      } else {
+        setDbSearchResults(null);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Merge tab bookings with initiated bookings (deduped by id)
+  const combinedBookings = useMemo(() => {
+    const map = new Map<string, Booking>();
+    
+    // Add tab bookings
+    bookings.forEach((b) => map.set(b.id, b));
+
+    // ALWAYS include upcoming/today initiated bookings (today onwards)
+    initiatedBookings.forEach((b) => {
+      if (b.date >= today && !map.has(b.id)) {
+        map.set(b.id, b);
+      }
+    });
+
+    return Array.from(map.values());
+  }, [bookings, initiatedBookings, today]);
+
   // Filter and sort bookings
   const filtered = useMemo(() => {
-    let result = bookings;
+    // If admin is searching by booking code and DB search returned records, prioritize them
+    if (search.trim() && dbSearchResults && dbSearchResults.length > 0) {
+      return dbSearchResults;
+    }
 
-    // Filter by This Month if selected
+    let result = combinedBookings;
+
+    // Filter by This Month if selected (keep initiated upcoming bookings visible regardless of month filter)
     if (filterPreset === 'month') {
       const now = new Date();
       const monthStart = startOfMonth(now);
       const monthEnd = endOfMonth(now);
 
       result = result.filter((b) => {
+        // Always include initiated bookings from today onwards
+        if (b.status === 'initiated' && b.date >= today) {
+          return true;
+        }
         try {
           const bookingDate = parseISO(b.date);
           return isWithinInterval(bookingDate, { start: monthStart, end: monthEnd });
@@ -79,9 +169,11 @@ export default function AdminBookingsPage() {
         return weightA - weightB;
       }
 
-      // 2. Sort by date: newest first
-      if (a.date !== b.date) {
-        return b.date.localeCompare(a.date);
+      // 2. Sort by date: for initiated, soonest date first; for others, newest first
+      if (a.status === 'initiated' && b.status === 'initiated') {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+      } else {
+        if (a.date !== b.date) return b.date.localeCompare(a.date);
       }
 
       // 3. Sort by createdAt: newest first
@@ -90,7 +182,7 @@ export default function AdminBookingsPage() {
 
       return dateB - dateA;
     });
-  }, [bookings, filterPreset, search]);
+  }, [combinedBookings, dbSearchResults, filterPreset, search, today]);
 
   // Pagination calculation
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
@@ -106,10 +198,14 @@ export default function AdminBookingsPage() {
   };
 
   const getSubheaderText = () => {
-    if (filterPreset === 'today') return `Today (${formatDateDisplay(today)})`;
     if (filterPreset === 'month') return `This Month (${format(new Date(), 'MMMM yyyy')})`;
     if (filterPreset === 'custom' && customDate) return `on ${formatDateDisplay(customDate)}`;
     return 'All Records / History';
+  };
+
+  const handleRefresh = () => {
+    refetch();
+    fetchInitiated();
   };
 
   return (
@@ -122,7 +218,7 @@ export default function AdminBookingsPage() {
             {filtered.length} booking{filtered.length !== 1 ? 's' : ''} · {getSubheaderText()}
           </p>
         </div>
-        <button onClick={refetch} className="btn-ghost btn-sm self-start sm:self-auto">
+        <button onClick={handleRefresh} className="btn-ghost btn-sm self-start sm:self-auto">
           <RefreshCw className="w-4 h-4" />
           Refresh
         </button>
@@ -130,16 +226,6 @@ export default function AdminBookingsPage() {
 
       {/* Preset Filter Tabs */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
-        <button
-          onClick={() => handlePresetChange('today')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-            filterPreset === 'today'
-              ? 'bg-navy text-cream-100 shadow-sm'
-              : 'bg-cream-200 text-navy-400 hover:bg-cream-300'
-          }`}
-        >
-          Today
-        </button>
         <button
           onClick={() => handlePresetChange('month')}
           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
@@ -170,6 +256,12 @@ export default function AdminBookingsPage() {
         >
           All Records
         </button>
+
+        {initiatedBookings.filter((b) => b.date >= today).length > 0 && (
+          <span className="badge bg-amber-100 text-amber-800 text-[10px] ml-auto font-medium">
+            ⚡ {initiatedBookings.filter((b) => b.date >= today).length} Initiated Pending
+          </span>
+        )}
       </div>
 
       {/* Search & Custom Date Filters */}
@@ -203,10 +295,15 @@ export default function AdminBookingsPage() {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              placeholder="Search name, reference code, phone..."
+              placeholder="Search name, code (e.g. JIOS-XXXXXX), phone..."
               className="form-input pl-10 text-sm"
               id="bookings-search"
             />
+            {searchingDb && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-caramel animate-pulse">
+                Searching DB...
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -222,8 +319,6 @@ export default function AdminBookingsPage() {
           description={
             search
               ? 'No bookings match your search.'
-              : filterPreset === 'today'
-              ? 'No bookings scheduled for today.'
               : 'No bookings found for the selected period.'
           }
         />

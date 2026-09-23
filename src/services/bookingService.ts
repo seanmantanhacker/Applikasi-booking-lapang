@@ -256,6 +256,44 @@ export async function getAdminBookings(date?: string): Promise<Booking[]> {
   );
 }
 
+/** Get all upcoming or today initiated bookings */
+export async function getInitiatedBookingsFromDate(fromDate: string): Promise<Booking[]> {
+  if (USE_MOCK) {
+    return mockDb.getBookings().filter((b) => b.status === 'initiated' && b.date >= fromDate);
+  }
+
+  const q = query(
+    collection(db, 'bookings'),
+    where('status', '==', 'initiated'),
+    where('date', '>=', fromDate),
+    orderBy('date'),
+    orderBy('startTime')
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) =>
+    convertFirestoreBooking(d.data() as Record<string, unknown>, d.id)
+  );
+}
+
+/** Search directly from database by booking reference code */
+export async function getBookingByReference(referenceCode: string): Promise<Booking[]> {
+  const code = referenceCode.trim().toUpperCase();
+  if (USE_MOCK) {
+    return mockDb.getBookings().filter((b) => b.referenceId.toUpperCase() === code);
+  }
+
+  const q = query(
+    collection(db, 'bookings'),
+    where('referenceId', '==', code)
+  );
+
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) =>
+    convertFirestoreBooking(d.data() as Record<string, unknown>, d.id)
+  );
+}
+
 // ── Admin: Update Booking ────────────────────────────────────
 
 export async function updateBooking(id: string, data: Partial<Booking>): Promise<void> {
