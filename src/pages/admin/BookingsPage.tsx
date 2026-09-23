@@ -32,19 +32,23 @@ export default function AdminBookingsPage() {
     }
     
     return [...result].sort((a, b) => {
-      // 1. Sort by status: initiated first, then confirmed
-      const statusWeight = { initiated: 1, confirmed: 2, cancelled: 3 };
-      const weightA = statusWeight[a.status] || 99;
-      const weightB = statusWeight[b.status] || 99;
-      
+      // 1. Sort by status: initiated first (weight 1), confirmed (weight 2), others last
+      const getWeight = (status: string) => {
+        if (status === 'initiated') return 1;
+        if (status === 'confirmed') return 2;
+        return 3;
+      };
+      const weightA = getWeight(a.status);
+      const weightB = getWeight(b.status);
+
       if (weightA !== weightB) {
         return weightA - weightB;
       }
-      
+
       // 2. Sort by createdAt: newest first (descending)
-      const dateA = a.createdAt ? a.createdAt.getTime() : 0;
-      const dateB = b.createdAt ? b.createdAt.getTime() : 0;
-      
+      const dateA = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+      const dateB = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+
       return dateB - dateA;
     });
   }, [bookings, search]);
