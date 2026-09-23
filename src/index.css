@@ -11,10 +11,23 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
     @apply bg-cream-200 text-navy font-sans;
+    min-height: 100vh;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    position: relative;
+  }
+
+  #root {
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
     min-height: 100vh;
   }
 
@@ -121,7 +134,7 @@
   /* ── Cards ───────────────────────────────────────── */
 
   .card {
-    @apply bg-white rounded-3xl shadow-soft p-6 transition-shadow duration-200;
+    @apply bg-white rounded-3xl shadow-soft p-4 sm:p-6 transition-shadow duration-200;
   }
 
   .card-hover {
@@ -129,11 +142,11 @@
   }
 
   .card-navy {
-    @apply bg-navy text-cream-200 rounded-3xl shadow-medium p-6;
+    @apply bg-navy text-cream-200 rounded-3xl shadow-medium p-4 sm:p-6;
   }
 
   .card-cream {
-    @apply bg-cream-200 rounded-3xl shadow-soft p-6;
+    @apply bg-cream-200 rounded-3xl shadow-soft p-4 sm:p-6;
   }
 
   /* ── Form Elements ───────────────────────────────── */
@@ -206,7 +219,7 @@
 
   .slot-available {
     @apply bg-cream-100 border-2 border-cream-400 text-navy
-           rounded-xl px-3 py-2.5 text-sm font-medium cursor-pointer
+           rounded-xl px-1.5 sm:px-3 py-2 sm:py-2.5 text-sm font-medium cursor-pointer
            transition-all duration-150
            hover:bg-navy hover:text-cream-200 hover:border-navy hover:shadow-soft
            active:scale-95;
@@ -214,19 +227,19 @@
 
   .slot-booked {
     @apply bg-red-50 border-2 border-red-200 text-red-400
-           rounded-xl px-3 py-2.5 text-sm font-medium cursor-not-allowed
+           rounded-xl px-1.5 sm:px-3 py-2 sm:py-2.5 text-sm font-medium cursor-not-allowed
            opacity-70;
   }
 
   .slot-selected {
     @apply bg-navy border-2 border-navy text-cream-200
-           rounded-xl px-3 py-2.5 text-sm font-semibold shadow-soft
+           rounded-xl px-1.5 sm:px-3 py-2 sm:py-2.5 text-sm font-semibold shadow-soft
            ring-2 ring-caramel ring-offset-1;
   }
 
   .slot-past {
     @apply bg-cream-300 border-2 border-cream-400 text-navy-200
-           rounded-xl px-3 py-2.5 text-sm cursor-not-allowed opacity-50;
+           rounded-xl px-1.5 sm:px-3 py-2 sm:py-2.5 text-sm cursor-not-allowed opacity-50;
   }
 
   /* ── Nav ─────────────────────────────────────────── */

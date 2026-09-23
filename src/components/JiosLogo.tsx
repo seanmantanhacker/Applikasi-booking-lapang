@@ -27,13 +27,13 @@ export default function JiosLogo({
   const isLight = variant === 'light';
 
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <div className={isLight ? 'p-1 rounded-xl bg-cream-100/90 shadow-sm inline-flex items-center justify-center' : 'inline-flex items-center justify-center'}>
+    <div className={`flex items-center gap-2 sm:gap-2.5 flex-shrink-0 ${className}`}>
+      <div className={isLight ? 'p-1 rounded-xl bg-cream-100/90 shadow-sm inline-flex items-center justify-center flex-shrink-0' : 'inline-flex items-center justify-center flex-shrink-0'}>
         <img
           src={logoSrc}
           alt="JIOS Padel & Coffee"
           style={{ height: `${s.imgHeight}px`, width: 'auto' }}
-          className="object-contain"
+          className="object-contain flex-shrink-0"
           onError={(e) => {
             // Fallback if image fails to load
             const target = e.currentTarget;
@@ -43,6 +43,7 @@ export default function JiosLogo({
       </div>
       {variant !== 'mark-only' && (
         <span
+          className="select-none flex-shrink-0"
           style={{
             fontFamily: "'Playfair Display', Georgia, serif",
             fontSize: s.text,

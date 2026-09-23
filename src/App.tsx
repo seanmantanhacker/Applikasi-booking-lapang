@@ -28,7 +28,7 @@ function ScrollToTop() {
 // Public layout wrapper
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-cream-200">
+    <div className="min-h-screen bg-cream-200 overflow-x-hidden w-full relative">
       <ScrollToTop />
       <Header />
       {children}

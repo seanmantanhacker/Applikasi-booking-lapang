@@ -13,18 +13,18 @@ export default function Hero() {
 
   return (
     <section
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-hero-pattern"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-hero-pattern"
       aria-label="Hero section"
     >
       {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none w-full max-w-full">
         {/* Large circle — padel ball echo */}
         <div
-          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-5"
+          className="absolute -top-32 -right-32 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full opacity-5"
           style={{ background: 'radial-gradient(circle, #F5F0E7 0%, transparent 70%)' }}
         />
         <div
-          className="absolute -bottom-24 -left-24 w-[400px] h-[400px] rounded-full opacity-5"
+          className="absolute -bottom-24 -left-24 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] rounded-full opacity-5"
           style={{ background: 'radial-gradient(circle, #B9783F 0%, transparent 70%)' }}
         />
         {/* Grid pattern */}
@@ -53,8 +53,8 @@ export default function Hero() {
             JIOS
           </span>
           <span
-            className="block text-2xl sm:text-3xl md:text-4xl font-light mt-2 tracking-widest uppercase"
-            style={{ color: '#D0BF9D', letterSpacing: '0.3em' }}
+            className="block text-xl sm:text-3xl md:text-4xl font-light mt-2 tracking-widest uppercase break-words"
+            style={{ color: '#D0BF9D', letterSpacing: '0.2em' }}
           >
             Padel & Coffee
           </span>

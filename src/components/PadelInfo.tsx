@@ -108,7 +108,7 @@ export default function PadelInfo() {
             </div>
 
             {/* Floating card */}
-            <div className="absolute -bottom-6 -left-6 bg-caramel rounded-2xl p-4 shadow-strong">
+            <div className="absolute -bottom-3 left-2 sm:-bottom-6 sm:-left-6 bg-caramel rounded-2xl p-4 shadow-strong">
               <p className="text-cream-100 text-xs font-semibold uppercase tracking-wide">Court Size</p>
               <p className="text-cream-200 text-lg font-bold mt-1">10 × 20 m</p>
               <p className="text-cream-300 text-xs mt-0.5">Enclosed glass walls</p>

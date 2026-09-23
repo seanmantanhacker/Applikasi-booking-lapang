@@ -78,30 +78,32 @@ export default function AvailabilityGrid({
   return (
     <div>
       {/* Court header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-navy flex items-center justify-center flex-shrink-0">
             <Clock className="w-4 h-4 text-cream-200" />
           </div>
           <h3 className="font-serif text-navy text-lg">{courtName}</h3>
         </div>
-        <div className="flex items-center gap-3 text-xs text-navy-300">
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-cream-300 border border-cream-400 inline-block" />
-            Available
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-red-100 border border-red-200 inline-block" />
-            Booked
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-cream-300/60 border border-cream-400 inline-block" />
-            Closed
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-navy inline-block" />
-            Selected
-          </span>
+        
+        {/* Status Legend */}
+        <div className="grid grid-cols-2 sm:flex sm:items-center sm:flex-wrap gap-2.5 sm:gap-4 text-xs text-navy-400 bg-cream-100/80 sm:bg-transparent p-2.5 sm:p-0 rounded-xl sm:rounded-none">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-cream-300 border border-cream-400 flex-shrink-0" />
+            <span className="truncate font-medium text-navy-400">Available</span>
+          </div>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-200 border border-red-300 flex-shrink-0" />
+            <span className="truncate font-medium text-red-500">Booked</span>
+          </div>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-cream-300/80 border border-cream-400 flex-shrink-0" />
+            <span className="truncate font-medium text-navy-300">Closed</span>
+          </div>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-navy flex-shrink-0" />
+            <span className="truncate font-medium text-navy">Selected</span>
+          </div>
         </div>
       </div>
 
@@ -135,13 +137,13 @@ export default function AvailabilityGrid({
               <button
                 key={slot.time}
                 onClick={() => onSelectTime(slot.time)}
-                className="slot-available text-center"
+                className="slot-available text-center min-w-0"
                 aria-label={`Select ${slot.time} – ${endTime}`}
                 title={`${slot.time} – ${endTime}`}
                 id={`slot-${slot.time.replace(':', '')}`}
               >
-                <div className="font-semibold">{slot.label}</div>
-                <div className="text-[10px] opacity-60 mt-0.5">– {endTime}</div>
+                <div className="font-semibold text-xs sm:text-sm truncate">{slot.label}</div>
+                <div className="text-[10px] opacity-60 mt-0.5 truncate leading-tight">– {endTime}</div>
               </button>
             );
           }
@@ -151,13 +153,13 @@ export default function AvailabilityGrid({
               <button
                 key={slot.time}
                 onClick={() => onSelectTime(slot.time)}
-                className="slot-selected text-center"
+                className="slot-selected text-center min-w-0"
                 aria-label={`Selected: ${slot.time} – ${endTime}`}
                 aria-pressed="true"
                 id={`slot-${slot.time.replace(':', '')}`}
               >
-                <div className="font-semibold">{slot.label}</div>
-                <div className="text-[10px] opacity-70 mt-0.5">– {endTime}</div>
+                <div className="font-semibold text-xs sm:text-sm truncate">{slot.label}</div>
+                <div className="text-[10px] opacity-70 mt-0.5 truncate leading-tight">– {endTime}</div>
               </button>
             );
           }
@@ -166,13 +168,13 @@ export default function AvailabilityGrid({
             return (
               <div
                 key={slot.time}
-                className="slot-booked text-center"
+                className="slot-booked text-center min-w-0"
                 aria-label={`${slot.time} is fully booked`}
                 role="img"
                 title="Fully Booked"
               >
-                <div className="font-semibold">{slot.label}</div>
-                <div className="text-[10px] opacity-60 mt-0.5">Booked</div>
+                <div className="font-semibold text-xs sm:text-sm truncate">{slot.label}</div>
+                <div className="text-[10px] opacity-60 mt-0.5 truncate leading-tight">Booked</div>
               </div>
             );
           }
@@ -181,13 +183,13 @@ export default function AvailabilityGrid({
             return (
               <div
                 key={slot.time}
-                className="slot-past text-center opacity-60 bg-cream-300/40 text-navy-400 cursor-not-allowed"
+                className="slot-past text-center opacity-60 bg-cream-300/40 text-navy-400 cursor-not-allowed min-w-0"
                 aria-label={`${slot.time} ends after venue closing time`}
                 role="img"
                 title={`Venue closes at ${getVenueCloseTime(date)}. Session would end at ${endTime}.`}
               >
-                <div className="font-semibold">{slot.label}</div>
-                <div className="text-[10px] opacity-60 mt-0.5">Closed</div>
+                <div className="font-semibold text-xs sm:text-sm truncate">{slot.label}</div>
+                <div className="text-[10px] opacity-60 mt-0.5 truncate leading-tight">Closed</div>
               </div>
             );
           }
@@ -196,13 +198,13 @@ export default function AvailabilityGrid({
           return (
             <div
               key={slot.time}
-              className="slot-past text-center"
+              className="slot-past text-center min-w-0"
               aria-label={`${slot.time} — passed`}
               role="img"
               title="Time Passed"
             >
-              <div className="font-semibold">{slot.label}</div>
-              <div className="text-[10px] opacity-50 mt-0.5">Passed</div>
+              <div className="font-semibold text-xs sm:text-sm truncate">{slot.label}</div>
+              <div className="text-[10px] opacity-50 mt-0.5 truncate leading-tight">Passed</div>
             </div>
           );
         })}

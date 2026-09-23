@@ -65,16 +65,16 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 w-full ${
         isHeaderSolid
           ? 'bg-white/95 backdrop-blur-soft shadow-soft border-b border-cream-300/40'
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-16 sm:h-20 w-full">
           {/* Logo */}
-          <Link to="/" aria-label="JIOS Padel & Coffee Home">
+          <Link to="/" aria-label="JIOS Padel & Coffee Home" className="flex-shrink-0">
             <JiosLogo
               variant={isHeaderSolid ? 'dark' : 'light'}
               size="md"
@@ -114,7 +114,7 @@ export default function Header() {
 
           {/* Mobile Hamburger */}
           <button
-            className={`md:hidden p-2 rounded-xl transition-colors ${
+            className={`md:hidden p-2 rounded-xl transition-colors flex-shrink-0 ${
               isHeaderSolid ? 'text-navy hover:bg-cream-300' : 'text-cream-200 hover:bg-white/10'
             }`}
             onClick={() => setMenuOpen((v) => !v)}

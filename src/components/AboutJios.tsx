@@ -49,9 +49,9 @@ export default function AboutJios() {
         </div>
 
         {/* Main concept callout */}
-        <div className="relative bg-navy rounded-4xl p-8 sm:p-12 mb-12 overflow-hidden">
+        <div className="relative bg-navy rounded-3xl sm:rounded-4xl p-6 sm:p-12 mb-12 overflow-hidden">
           {/* Decorative */}
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-5"
+          <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 rounded-full opacity-5 pointer-events-none"
             style={{ background: 'radial-gradient(circle, #B9783F 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}
           />
           <div className="relative z-10 max-w-2xl">
