@@ -107,11 +107,17 @@ export default function AdminBookingsPage() {
               onKeyDown={(e) => e.key === 'Enter' && setSelectedBooking(booking)}
               id={`booking-row-${booking.id}`}
             >
-              {/* Reference */}
-              <div className="flex-shrink-0">
-                <span className="badge badge-available text-[10px]">
+              {/* Reference & Status */}
+              <div className="flex-shrink-0 flex flex-col items-start gap-1.5 w-24">
+                <span className="badge bg-cream-300 text-navy-500 text-[10px]">
                   {booking.referenceId}
                 </span>
+                {booking.status === 'initiated' && (
+                  <span className="badge bg-amber-100 text-amber-700 text-[9px]">Initiated</span>
+                )}
+                {booking.status === 'confirmed' && (
+                  <span className="badge bg-emerald-100 text-emerald-700 text-[9px]">Confirmed</span>
+                )}
               </div>
 
               {/* Main info */}

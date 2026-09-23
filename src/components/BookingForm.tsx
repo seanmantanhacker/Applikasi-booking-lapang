@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { User, Phone, Calendar, Clock, Users, FileText, ArrowRight, CheckCircle } from 'lucide-react';
-import { COURTS, BOOKING_DURATIONS } from '../config/site';
+import { COURTS, BOOKING_DURATIONS, SITE_CONFIG } from '../config/site';
 import type { BookingFormData, Booking } from '../types';
 import {
   validateName,
@@ -140,6 +140,23 @@ export default function BookingForm() {
     try {
       const booking = await createBooking(form);
       setConfirmedBooking(booking);
+
+      // Redirect to WhatsApp for confirmation
+      const text = `Hello Admin, I would like to confirm my booking:
+Ref Code: ${booking.referenceId}
+Name: ${booking.customerName}
+Date: ${booking.date}
+Time: ${booking.startTime} - ${booking.endTime} (${booking.duration} Hours)`;
+      
+      // Remove non-numeric characters for WhatsApp link except leading +
+      let phoneNum = SITE_CONFIG.PHONE.replace(/[^\d+]/g, '');
+      if (phoneNum.startsWith('0')) {
+        phoneNum = '+62' + phoneNum.slice(1);
+      }
+      
+      const waUrl = `https://wa.me/${phoneNum.replace('+', '')}?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, '_blank');
+
       setStep('confirmation');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Booking failed. Please try again.';

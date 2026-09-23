@@ -22,9 +22,9 @@ export default function BookingConfirmation({ booking, onReset }: BookingConfirm
         </div>
       </div>
 
-      <h2 className="font-serif text-3xl text-navy mb-2">Booking Confirmed!</h2>
+      <h2 className="font-serif text-3xl text-navy mb-2">Booking Initiated!</h2>
       <p className="text-navy-300 mb-8">
-        Your court is reserved. See you on the court! ☕
+        Your slot is reserved temporarily. Please confirm your payment via WhatsApp to secure the court! ☕
       </p>
 
       {/* Reference */}
@@ -77,8 +77,7 @@ export default function BookingConfirmation({ booking, onReset }: BookingConfirm
 
       <p className="text-navy-300 text-xs mb-8">
         Please save your booking reference number:{' '}
-        <strong className="text-navy">{booking.referenceId}</strong>. Contact us if you need to
-        make any changes.
+        <strong className="text-navy">{booking.referenceId}</strong>. If WhatsApp did not open automatically, please contact us manually to confirm your payment.
       </p>
 
       {/* Actions */}

@@ -21,6 +21,7 @@ export default function AdminDashboardPage() {
   const stats = {
     total: bookings.length,
     confirmed: bookings.filter((b) => b.status === 'confirmed').length,
+    initiated: bookings.filter((b) => b.status === 'initiated').length,
     players: bookings.reduce((sum, b) => sum + b.playerCount, 0),
   };
 
@@ -51,10 +52,11 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {[
           { label: 'Bookings', value: stats.total, color: 'bg-navy' },
           { label: 'Confirmed', value: stats.confirmed, color: 'bg-emerald-600' },
+          { label: 'Initiated', value: stats.initiated, color: 'bg-amber-600' },
           { label: 'Players Today', value: stats.players, color: 'bg-caramel' },
         ].map((stat) => (
           <div key={stat.label} className="card text-center">

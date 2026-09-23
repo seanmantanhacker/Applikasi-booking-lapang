@@ -72,7 +72,7 @@ export async function getAvailabilityByDate(
       collection(db, 'bookings'),
       where('date', '==', date),
       where('courtId', '==', courtId),
-      where('status', '==', 'confirmed')
+      where('status', 'in', ['confirmed', 'initiated'])
     );
     const snapshot = await getDocs(q);
     bookings = snapshot.docs.map((d) =>
@@ -172,7 +172,7 @@ export async function createBooking(formData: BookingFormData): Promise<Booking>
       bookingsRef,
       where('date', '==', formData.date),
       where('courtId', '==', formData.courtId),
-      where('status', '==', 'confirmed')
+      where('status', 'in', ['confirmed', 'initiated'])
     );
     const snapshot = await getDocs(q);
     const existingBookings = snapshot.docs.map((d) =>
@@ -199,7 +199,7 @@ export async function createBooking(formData: BookingFormData): Promise<Booking>
       courtId: formData.courtId,
       playerCount: formData.playerCount,
       notes: formData.notes || '',
-      status: 'confirmed',
+      status: 'initiated',
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -216,7 +216,7 @@ export async function createBooking(formData: BookingFormData): Promise<Booking>
       courtId: formData.courtId,
       playerCount: formData.playerCount,
       notes: formData.notes || '',
-      status: 'confirmed' as const,
+      status: 'initiated' as const,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -238,13 +238,13 @@ export async function getAdminBookings(date?: string): Promise<Booking[]> {
     q = query(
       collection(db, 'bookings'),
       where('date', '==', date),
-      where('status', '==', 'confirmed'),
+      where('status', 'in', ['confirmed', 'initiated']),
       orderBy('startTime')
     );
   } else {
     q = query(
       collection(db, 'bookings'),
-      where('status', '==', 'confirmed'),
+      where('status', 'in', ['confirmed', 'initiated']),
       orderBy('date'),
       orderBy('startTime')
     );
@@ -333,7 +333,7 @@ export async function moveBooking(
       collection(db, 'bookings'),
       where('date', '==', newDate),
       where('courtId', '==', newCourtId),
-      where('status', '==', 'confirmed')
+      where('status', 'in', ['confirmed', 'initiated'])
     );
     const snapshot = await getDocs(q);
     const existing = snapshot.docs

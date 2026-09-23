@@ -3,7 +3,7 @@
 // ============================================================
 
 import { useState } from 'react';
-import { X, Edit2, Trash2, MoveRight, Save, AlertTriangle, Loader2 } from 'lucide-react';
+import { X, Edit2, Trash2, MoveRight, Save, AlertTriangle, Loader2, CheckCircle } from 'lucide-react';
 import type { Booking } from '../../types';
 import { BOOKING_DURATIONS, COURTS, TIME_SLOTS } from '../../config/site';
 import { updateBooking, deleteBooking, moveBooking } from '../../services/bookingService';
@@ -34,6 +34,20 @@ export default function BookingModal({ booking, onClose, onUpdated }: BookingMod
   const [moveDuration, setMoveDuration] = useState(booking.duration);
 
   const court = COURTS[0];
+
+  const handleConfirmPayment = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await updateBooking(booking.id, { status: 'confirmed' });
+      onUpdated();
+      onClose();
+    } catch {
+      setError('Failed to confirm payment. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSaveEdit = async () => {
     setLoading(true);
@@ -178,6 +192,22 @@ export default function BookingModal({ booking, onClose, onUpdated }: BookingMod
                   <span className="text-navy font-medium">{row.value}</span>
                 </div>
               ))}
+
+              {booking.status === 'initiated' && (
+                <div className="mt-6 pt-4 border-t border-cream-300">
+                  <button
+                    onClick={handleConfirmPayment}
+                    disabled={loading}
+                    className="btn-primary w-full"
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+                    Confirm Payment & Booking
+                  </button>
+                  <p className="text-xs text-navy-300 mt-2 text-center">
+                    Click this after verifying the customer's payment on WhatsApp.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 

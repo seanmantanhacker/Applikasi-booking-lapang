@@ -2,7 +2,7 @@
 // JIOS Padel & Coffee — TypeScript Type Definitions
 // ============================================================
 
-export type BookingStatus = 'confirmed' | 'cancelled';
+export type BookingStatus = 'initiated' | 'confirmed' | 'cancelled';
 
 export interface Court {
   id: string;
