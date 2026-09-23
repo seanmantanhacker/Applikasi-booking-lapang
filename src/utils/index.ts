@@ -105,10 +105,17 @@ export function validateName(name: string): boolean {
 
 // ── Reference ID ─────────────────────────────────────────────
 
-/** Generate a sequential-looking booking reference */
+/** 
+ * Generate a unique 6-character alphanumeric booking reference.
+ * Excludes ambiguous characters (0, O, 1, I) to prevent confusion for customers and staff.
+ */
 export function generateReferenceId(): string {
-  const num = Math.floor(Math.random() * 9000) + 1000;
-  return `JIOS-${num}`;
+  const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `JIOS-${result}`;
 }
 
 // ── Formatting ───────────────────────────────────────────────
