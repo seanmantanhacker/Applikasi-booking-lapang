@@ -16,7 +16,7 @@ export const SITE_CONFIG = {
   ADDRESS: 'Jl. BKR no. 180 Bandung',
   PHONE: '+62 8777 105 1800',
   EMAIL: 'jiosofficial10@gmail.com',
-  GOOGLE_MAPS_URL: 'https://maps.google.com/?q=JIOS+Padel+Coffee',
+  GOOGLE_MAPS_URL: 'https://maps.app.goo.gl/Eup3cYSEkMSfRUqt9',
 
   // ── Opening Hours ─────────────────────────────────────────
   OPENING_HOURS: [
