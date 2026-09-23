@@ -28,7 +28,7 @@ service cloud.firestore {
         request.resource.data.customerName.size() <= 100 &&
         request.resource.data.phone is string &&
         request.resource.data.phone.size() >= 8 &&
-        request.resource.data.status == 'confirmed' &&
+        request.resource.data.status == 'initiated' &&
         request.resource.data.playerCount >= 1 &&
         request.resource.data.playerCount <= 50 &&
         request.resource.data.duration >= 1 &&
