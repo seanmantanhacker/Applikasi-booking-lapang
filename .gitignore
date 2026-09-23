@@ -1,5 +1,6 @@
 # See .env.example for the required environment variables.
 # Never commit your actual .env file to version control.
+.env
 .env.local
 .env.production
 
