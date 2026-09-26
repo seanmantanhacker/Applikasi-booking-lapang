@@ -169,17 +169,27 @@ export default function AdminBookingsPage() {
         return weightA - weightB;
       }
 
-      // 2. Sort by date: for initiated, soonest date first; for others, newest first
+      // 2. Secondary sort:
+      // For initiated: sort latest to oldest (newest created / booked first)
       if (a.status === 'initiated' && b.status === 'initiated') {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-      } else {
-        if (a.date !== b.date) return b.date.localeCompare(a.date);
+        const timeA = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
+        const timeB = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
+        if (timeA !== timeB) {
+          return timeB - timeA; // newest created first
+        }
+        if (a.date !== b.date) {
+          return b.date.localeCompare(a.date); // latest date first
+        }
+        return b.startTime.localeCompare(a.startTime);
       }
 
-      // 3. Sort by createdAt: newest first
+      // For confirmed and others: keep as is (date descending, then newest createdAt)
+      if (a.date !== b.date) {
+        return b.date.localeCompare(a.date);
+      }
+
       const dateA = a.createdAt instanceof Date ? a.createdAt.getTime() : 0;
       const dateB = b.createdAt instanceof Date ? b.createdAt.getTime() : 0;
-
       return dateB - dateA;
     });
   }, [combinedBookings, dbSearchResults, filterPreset, search, today]);

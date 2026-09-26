@@ -71,25 +71,27 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Date selector */}
-      <div className="card mb-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Calendar className="w-5 h-5 text-caramel" />
-            <span className="font-semibold text-navy text-sm">View Date:</span>
-          </div>
+      <div className="card mb-6 max-w-full overflow-hidden">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 min-w-0">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Calendar className="w-5 h-5 text-caramel" />
+              <span className="font-semibold text-navy text-sm">View Date:</span>
+            </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="form-input text-sm"
-              id="admin-date-picker"
-            />
+            <div className="flex items-center gap-3">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="form-input text-sm py-1.5 px-3"
+                id="admin-date-picker"
+              />
+            </div>
           </div>
 
           {/* Quick nav */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1 min-w-0 flex-1 max-w-full">
             {[-1, 0, 1, 2, 3, 4, 5, 6].map((offset) => {
               const d = format(addDays(new Date(today), offset), 'yyyy-MM-dd');
               const label =
@@ -102,7 +104,7 @@ export default function AdminDashboardPage() {
                 <button
                   key={d}
                   onClick={() => setSelectedDate(d)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex-shrink-0
                     ${selectedDate === d
                       ? 'bg-navy text-cream-200'
                       : 'bg-cream-200 text-navy hover:bg-cream-300'
