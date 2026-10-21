@@ -89,9 +89,7 @@ export default function BookingSummary({
       {/* Notice */}
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
         <p className="text-amber-800 text-xs leading-relaxed">
-          <span className="font-semibold">Please note:</span> Once confirmed, your booking will be
-          reserved immediately. If you need to cancel or change your booking, please contact us
-          directly via WhatsApp or phone.
+          <span className="font-semibold">Please note:</span> After confirming your booking, you will be directed to our WhatsApp admin. To secure your booking, the admin may ask you to complete the payment first. If you need to cancel or change your booking, please contact us directly via WhatsApp.
         </p>
       </div>
 
