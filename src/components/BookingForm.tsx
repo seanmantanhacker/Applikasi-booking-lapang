@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { User, Phone, Calendar, Clock, Users, FileText, ArrowRight, CheckCircle } from 'lucide-react';
-import { COURTS, BOOKING_DURATIONS, SITE_CONFIG } from '../config/site';
+import { COURTS, BOOKING_DURATIONS, SITE_CONFIG, calculateBookingPrice } from '../config/site';
 import type { BookingFormData, Booking } from '../types';
 import {
   validateName,
@@ -14,6 +14,7 @@ import {
   formatDateDisplay,
   getTodayString,
   isDateAvailable,
+  formatRupiah,
 } from '../utils';
 import { checkSlotAvailability, createBooking } from '../services/bookingService';
 import { useAvailability } from '../hooks/useAvailability';
@@ -141,12 +142,15 @@ export default function BookingForm() {
       const booking = await createBooking(form);
       setConfirmedBooking(booking);
 
+      const priceInfo = calculateBookingPrice(booking.date, booking.startTime, booking.duration);
+
       // Redirect to WhatsApp for confirmation
       const text = `Hello Admin, I would like to confirm my booking:
 Ref Code: ${booking.referenceId}
 Name: ${booking.customerName}
 Date: ${booking.date}
-Time: ${booking.startTime} - ${booking.endTime} (${booking.duration} Hours)`;
+Time: ${booking.startTime} - ${booking.endTime} (${booking.duration} Hours)
+Estimated Total: ${formatRupiah(priceInfo.total)}`;
       
       // Remove non-numeric characters for WhatsApp link except leading +
       let phoneNum = SITE_CONFIG.PHONE.replace(/[^\d+]/g, '');
@@ -199,6 +203,7 @@ Time: ${booking.startTime} - ${booking.endTime} (${booking.duration} Hours)`;
   }
 
   const endTime = form.startTime ? calculateEndTime(form.startTime, form.duration) : null;
+  const priceInfo = form.startTime ? calculateBookingPrice(form.date, form.startTime, form.duration) : null;
 
   return (
     <div ref={containerRef} id="booking" className="scroll-mt-28">
@@ -312,18 +317,42 @@ Time: ${booking.startTime} - ${booking.endTime} (${booking.duration} Hours)`;
                 </div>
               )}
 
-              {/* Selected slot preview */}
-              {form.startTime && endTime && (
-                <div className="mt-3 flex items-center gap-2 p-3 bg-navy/5 rounded-xl border border-navy/10">
-                  <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span className="text-sm text-navy">
-                    Selected:{' '}
-                    <strong>
-                      {form.startTime} – {endTime}
-                    </strong>{' '}
-                    on{' '}
-                    <strong>{formatDateDisplay(form.date)}</strong>
-                  </span>
+              {/* Selected slot preview & price */}
+              {form.startTime && endTime && priceInfo && (
+                <div className="mt-4 p-4 bg-cream-100 rounded-2xl border border-cream-400/70 shadow-soft">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-cream-300">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                      <span className="text-sm font-semibold text-navy">
+                        {form.startTime} – {endTime} ({form.duration} {form.duration === 1 ? 'Hour' : 'Hours'})
+                      </span>
+                    </div>
+                    <span className="self-start sm:self-auto text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-navy text-cream-200">
+                      {priceInfo.isWeekend ? 'Weekend' : 'Weekday'}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3">
+                    <div>
+                      <span className="text-xs text-navy-300 font-medium block">Rincian Slot & Tarif:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {priceInfo.breakdown.map((b, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[11px] text-navy bg-white/90 px-2 py-0.5 rounded border border-cream-300 font-medium"
+                          >
+                            {b.label} ({formatRupiah(b.rate)})
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="text-left sm:text-right flex-shrink-0">
+                      <div className="font-serif font-bold text-xl text-caramel">
+                        {formatRupiah(priceInfo.total)}
+                      </div>
+                      <span className="text-[11px] text-navy-300 font-medium">Total Estimasi</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

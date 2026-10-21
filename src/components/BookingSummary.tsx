@@ -2,9 +2,10 @@
 // JIOS — Booking Summary (Review before confirm)
 // ============================================================
 
-import { ArrowLeft, Calendar, Clock, Users, User, Phone, MapPin, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Users, User, Phone, MapPin, Loader2, Tag } from 'lucide-react';
 import type { BookingFormData } from '../types';
-import { calculateEndTime, formatDateDisplay, formatDuration } from '../utils';
+import { calculateEndTime, formatDateDisplay, formatDuration, formatRupiah } from '../utils';
+import { calculateBookingPrice } from '../config/site';
 
 interface BookingSummaryProps {
   form: BookingFormData;
@@ -22,6 +23,7 @@ export default function BookingSummary({
   submitting,
 }: BookingSummaryProps) {
   const endTime = calculateEndTime(form.startTime, form.duration);
+  const priceInfo = calculateBookingPrice(form.date, form.startTime, form.duration);
 
   const rows = [
     { icon: <User className="w-4 h-4" />, label: 'Name', value: form.customerName },
@@ -37,6 +39,11 @@ export default function BookingSummary({
       icon: <Users className="w-4 h-4" />,
       label: 'Players',
       value: `${form.playerCount} player${form.playerCount > 1 ? 's' : ''}`,
+    },
+    {
+      icon: <Tag className="w-4 h-4" />,
+      label: 'Estimated Price',
+      value: `${formatRupiah(priceInfo.total)} (${form.duration} Hour${form.duration > 1 ? 's' : ''})`,
     },
     ...(form.notes ? [{ icon: null, label: 'Notes', value: form.notes }] : []),
   ];

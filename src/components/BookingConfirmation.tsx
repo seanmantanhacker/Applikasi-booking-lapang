@@ -3,9 +3,10 @@
 // ============================================================
 
 import { Link } from 'react-router-dom';
-import { CheckCircle, Calendar, Clock, Users, Hash, MapPin, ArrowLeft } from 'lucide-react';
+import { CheckCircle, Calendar, Clock, Users, Hash, MapPin, ArrowLeft, Tag } from 'lucide-react';
 import type { Booking } from '../types';
-import { formatDateDisplay, formatDuration } from '../utils';
+import { formatDateDisplay, formatDuration, formatRupiah } from '../utils';
+import { calculateBookingPrice } from '../config/site';
 
 interface BookingConfirmationProps {
   booking: Booking;
@@ -13,6 +14,8 @@ interface BookingConfirmationProps {
 }
 
 export default function BookingConfirmation({ booking, onReset }: BookingConfirmationProps) {
+  const priceInfo = calculateBookingPrice(booking.date, booking.startTime, booking.duration);
+
   return (
     <div className="max-w-lg mx-auto text-center animate-slide-up">
       {/* Success icon */}
@@ -58,6 +61,11 @@ export default function BookingConfirmation({ booking, onReset }: BookingConfirm
               icon: <Users className="w-4 h-4 text-caramel" />,
               label: 'Players',
               value: `${booking.playerCount} player${booking.playerCount > 1 ? 's' : ''}`,
+            },
+            {
+              icon: <Tag className="w-4 h-4 text-caramel" />,
+              label: 'Estimated Total',
+              value: `${formatRupiah(priceInfo.total)}`,
             },
           ].map((row) => (
             <div key={row.label} className="flex items-center gap-3">

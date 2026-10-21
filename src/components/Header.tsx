@@ -10,6 +10,7 @@ import JiosLogo from './JiosLogo';
 const NAV_LINKS = [
   { label: 'Home', href: '/', hash: '' },
   { label: 'Padel', href: '/#padel', hash: 'padel' },
+  { label: 'Pricing', href: '/#pricing', hash: 'pricing' },
   { label: 'About', href: '/#about', hash: 'about' },
   { label: 'Schedule', href: '/schedule', hash: '' },
   { label: 'Location', href: '/#location', hash: 'location' },

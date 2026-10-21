@@ -5,6 +5,7 @@
 import Hero from '../components/Hero';
 import PadelInfo from '../components/PadelInfo';
 import AboutJios from '../components/AboutJios';
+import PricingSection from '../components/PricingSection';
 import BookingForm from '../components/BookingForm';
 import LocationSection from '../components/LocationSection';
 
@@ -14,6 +15,7 @@ export default function HomePage() {
       <Hero />
       <PadelInfo />
       <AboutJios />
+      <PricingSection />
 
       {/* Booking Section */}
       <section className="section-padding bg-cream-200" id="booking-section">
