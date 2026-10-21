@@ -11,7 +11,6 @@ import {
   validateName,
   validatePhone,
   calculateEndTime,
-  formatDateDisplay,
   getTodayString,
   isDateAvailable,
   formatRupiah,
