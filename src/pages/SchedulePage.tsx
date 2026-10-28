@@ -138,33 +138,24 @@ export default function SchedulePage() {
         </div>
 
         {/* Date display */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-serif text-xl text-navy">
-            {formatDateDisplay(selectedDate)}
-          </h2>
-          {selectedDate === today && (
-            <span className="badge badge-available">Today</span>
-          )}
-        </div>
-
-        {/* Rate preview badge */}
-        <div className="card p-4 mb-6 border border-cream-300 bg-white shadow-soft">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-caramel/15 text-caramel">
-                Tarif {new Date(selectedDate + 'T00:00:00').getDay() === 0 || new Date(selectedDate + 'T00:00:00').getDay() === 6 ? 'Weekend' : 'Weekday'}
-              </span>
-              <span className="text-xs text-navy-400 font-medium">
-                {new Date(selectedDate + 'T00:00:00').getDay() === 0 || new Date(selectedDate + 'T00:00:00').getDay() === 6
-                  ? 'Regular (08:00 – 22:00): Rp 100.000 / jam'
-                  : 'Happy Hour: Rp 60k | Regular: Rp 75k | Peak (18-22): Rp 85k'}
-              </span>
-            </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+          <div className="flex items-center gap-3">
+            <h2 className="font-serif text-xl text-navy">
+              {formatDateDisplay(selectedDate)}
+            </h2>
+            <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-caramel/15 text-caramel">
+              {new Date(selectedDate + 'T00:00:00').getDay() === 0 || new Date(selectedDate + 'T00:00:00').getDay() === 6 ? 'Weekend' : 'Weekday'}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            {selectedDate === today && (
+              <span className="badge badge-available">Today</span>
+            )}
             <Link
               to="/#pricing"
               className="text-xs font-semibold text-caramel hover:text-caramel-600 underline inline-flex items-center gap-1"
             >
-              Lihat Rincian Pricelist & Member →
+              Lihat Pricelist & Member →
             </Link>
           </div>
         </div>

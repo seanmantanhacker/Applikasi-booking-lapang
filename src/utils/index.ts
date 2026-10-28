@@ -143,6 +143,15 @@ export function formatRupiah(amount: number): string {
   }).format(amount);
 }
 
+/** Format currency in compact Rupiah (e.g. Rp 75k) */
+export function formatRupiahShort(amount: number): string {
+  if (amount >= 1000) {
+    const k = amount / 1000;
+    return `Rp ${Number.isInteger(k) ? k : k.toFixed(1)}k`;
+  }
+  return formatRupiah(amount);
+}
+
 
 // ── Misc ─────────────────────────────────────────────────────
 
