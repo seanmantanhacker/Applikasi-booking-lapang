@@ -296,7 +296,7 @@ Mohon info ketersediaan slot dan cara pendaftarannya. Terima kasih!`;
 
             {/* Note banner */}
             <div className="card bg-cream-200 border border-cream-400/60 p-4 text-xs text-navy-400 text-center max-w-3xl mx-auto rounded-2xl">
-              💡 <strong>Catatan Member:</strong> Masa aktif kuota berlaku 30 hari sejak tanggal aktivasi. Reservasi slot member dapat dilakukan langsung ke kasir atau via WhatsApp resmi JIOS.
+              💡 <strong>Catatan Member:</strong> Seluruh kuota jam member harus digunakan pada bulan yang sama. Masa aktif dihitung sejak hari pertama pemakaian.
             </div>
           </div>
         )}
